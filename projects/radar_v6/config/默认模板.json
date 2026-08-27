@@ -1,0 +1,80 @@
+{
+  "name": "默认模板",
+  "name_col": 2,
+  "data_start_row": 6,
+  "header_row_primary": 5,
+  "header_row_secondary": 4,
+  "score_max": 10,
+  "dimensions": [
+    {
+      "name": "身体素质",
+      "direct_col": 11,
+      "sum_cols": [
+        8,
+        9,
+        10
+      ],
+      "item_names": [
+        "年龄",
+        "身体健康",
+        "心理健康"
+      ]
+    },
+    {
+      "name": "资质资历",
+      "direct_col": 16,
+      "sum_cols": [
+        12,
+        13,
+        14,
+        15
+      ],
+      "item_names": [
+        "学历",
+        "职称",
+        "本岗位工作年限",
+        "具备资格证件"
+      ]
+    },
+    {
+      "name": "工作能力",
+      "direct_col": 17,
+      "sum_cols": [
+        17
+      ],
+      "item_names": []
+    },
+    {
+      "name": "QHSE能力",
+      "direct_col": 22,
+      "sum_cols": [
+        18,
+        19,
+        20,
+        21
+      ],
+      "item_names": [
+        "QHSE意愿",
+        "岗位基本知识",
+        "岗位QHSE技能",
+        "应急处置能力"
+      ]
+    },
+    {
+      "name": "工作态度",
+      "direct_col": 27,
+      "sum_cols": [
+        23,
+        24,
+        25,
+        26
+      ],
+      "item_names": [
+        "责任心",
+        "执行力",
+        "主动性",
+        "协作精神"
+      ]
+    }
+  ]
+}

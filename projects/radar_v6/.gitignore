@@ -1,0 +1,16 @@
+﻿# Byte-compiled / cache
+__pycache__/
+*.py[cod]
+
+# Build outputs
+build/
+dist/
+*.spec
+
+# Virtual envs
+.venv/
+venv/
+
+# IDE
+.idea/
+.vscode/

@@ -1,0 +1,24 @@
+﻿[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "radar-v6"
+version = "0.6.0"
+description = "员工能力雷达图工具 V6"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "matplotlib>=3.8",
+  "numpy>=1.24",
+  "openpyxl>=3.1"
+]
+
+[project.scripts]
+radar-v6 = "radar_v6.app:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
