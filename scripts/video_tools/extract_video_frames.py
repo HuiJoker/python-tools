@@ -21,30 +21,30 @@ VIDEO_EXTENSIONS = {
 }
 
 
-# def parse_args() -> argparse.Namespace:
-#     parser = argparse.ArgumentParser(
-#         description="Extract JPG frames from one video or all videos in a folder."
-#     )
-#     parser.add_argument("input", help="Input video file or folder.")
-#     parser.add_argument("output", help="Output folder for extracted JPG files.")
-#     parser.add_argument(
-#         "-i",
-#         "--interval-seconds",
-#         type=float,
-#         default=1.0,
-#         help="Time interval between frames in seconds. Default: 1.0.",
-#     )
-#     parser.add_argument(
-#         "--recursive",
-#         action="store_true",
-#         help="When input is a folder, include videos in subfolders.",
-#     )
-#     parser.add_argument(
-#         "--flat",
-#         action="store_true",
-#         help="Save all frames directly in the output folder instead of one subfolder per video.",
-#     )
-#     return parser.parse_args()
+def parse_args() -> argparse.Namespace:
+    parser = argparse.ArgumentParser(
+        description="Extract JPG frames from one video or all videos in a folder."
+    )
+    parser.add_argument("input", help="Input video file or folder.")
+    parser.add_argument("output", help="Output folder for extracted JPG files.")
+    parser.add_argument(
+        "-i",
+        "--interval-seconds",
+        type=float,
+        default=1.0,
+        help="Time interval between frames in seconds. Default: 1.0.",
+    )
+    parser.add_argument(
+        "--recursive",
+        action="store_true",
+        help="When input is a folder, include videos in subfolders.",
+    )
+    parser.add_argument(
+        "--flat",
+        action="store_true",
+        help="Save all frames directly in the output folder instead of one subfolder per video.",
+    )
+    return parser.parse_args()
 
 
 def save_jpg(image_path: Path, frame) -> bool:
