@@ -2,7 +2,7 @@
 """Split images in one folder into numbered batch folders.
 
 Example:
-    python split_images_by_count.py "F:\\work\\数据\\03_蜀渝_General_Person"
+    python split_images_by_count.py "F:\\work\\数据\\2_蜀渝\\SY_General_Tools\\20260820_SY_General_Tools_all_CS"
     python split_images_by_count.py "F:\\work\\数据\\03_蜀渝_General_Person" --batch-size 500 --copy
 """
 
