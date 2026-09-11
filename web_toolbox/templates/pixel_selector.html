@@ -1,0 +1,6 @@
+{% extends "base.html" %}{% block title %}像素距离测量 · 工具台{% endblock %}{% block content %}
+<a class="back" href="/">← 返回工具</a><h1>像素距离测量</h1><p class="muted">该工具会启动独立的 OpenCV 桌面窗口，以保留顺滑的缩放、拖动和双点测距体验。</p>
+{% include "partials/error.html" %}
+{% if launched_pid %}<div class="panel"><p class="success">桌面测量器已启动（进程 #{{ launched_pid }}）。请切换到打开的 Point Selector 窗口操作。</p></div>{% endif %}
+<form method="post" class="panel form tool-form" data-tool="pixel-selector"><label>图片路径（与下方二选一）<input name="image_path" placeholder="F:\\image.jpg" value="{{ form.image_path if form else '' }}"></label><label>视频流、视频文件或摄像头编号（与上方二选一）<input name="stream_url" placeholder="0 或 rtsp://..." value="{{ form.stream_url if form else '' }}"></label><label>预读帧数<input type="number" name="warmup_frames" min="1" value="{{ form.warmup_frames if form else 5 }}"></label><button>启动桌面测量器</button></form>
+{% endblock %}

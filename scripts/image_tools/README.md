@@ -17,6 +17,10 @@ python pixel_distance_selector.py --stream "0"
 python pixel_distance_selector.py --stream "rtsp://user:password@192.168.1.10:554/stream1"
 ```
 
+## Legacy Source
+
+`legacy/像素.py` is the original standalone source imported from `cv-toolbox` for archival reference. Use `pixel_distance_selector.py` for new work: it provides command-line source selection, stream timeouts, and a more maintainable implementation. The web tool launches this maintained version in a desktop OpenCV window.
+
 Controls:
 
 - Left mouse: select point

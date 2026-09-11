@@ -1,6 +1,6 @@
 {% extends "base.html" %}{% block title %}标注版本对比 · 工具台{% endblock %}{% block content %}
 <a class="back" href="/">← 返回工具</a><h1>标注版本对比</h1><p class="muted">按同名 XML 文件比对对象变化；只读取两个目录。</p>
 {% include "partials/error.html" %}
-<form method="post" class="panel form"><label>v1 XML 文件夹<input name="v1_folder" required placeholder="F:\\dataset-v1" value="{{ form.v1_folder if form else '' }}"></label><label>v2 XML 文件夹<input name="v2_folder" required placeholder="F:\\dataset-v2" value="{{ form.v2_folder if form else '' }}"></label><button>开始对比</button></form>
+<form method="post" class="panel form tool-form" data-tool="label-compare"><label>v1 XML 文件夹<input name="v1_folder" required placeholder="F:\\dataset-v1" value="{{ form.v1_folder if form else '' }}"></label><label>v2 XML 文件夹<input name="v2_folder" required placeholder="F:\\dataset-v2" value="{{ form.v2_folder if form else '' }}"></label><button>开始对比</button></form>
 {% if task %}{% include "partials/task_result.html" %}{% endif %}
 {% endblock %}

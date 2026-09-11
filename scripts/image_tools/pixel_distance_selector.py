@@ -68,29 +68,41 @@ def read_image(image_path: str) -> tuple[np.ndarray, str]:
 
 
 def read_stream_frame(stream_url: str, warmup_frames: int, timeout_seconds: float) -> tuple[np.ndarray, str]:
-    cap = cv2.VideoCapture(parse_stream_source(stream_url))
-    deadline = time.monotonic() + timeout_seconds
-    frame = None
-    read_count = 0
+    source = parse_stream_source(stream_url)
+    # On Windows, some USB cameras open through MSMF but never yield a frame.
+    # Prefer DirectShow for numeric camera indexes, then fall back to MSMF.
+    backends = [(None, "default")]
+    if isinstance(source, int):
+        backends = [(getattr(cv2, "CAP_DSHOW", None), "DirectShow"), (getattr(cv2, "CAP_MSMF", None), "MSMF")]
 
-    try:
-        while time.monotonic() < deadline:
-            ok, current = cap.read()
-            if not ok or current is None:
-                time.sleep(0.1)
+    errors: list[str] = []
+    per_backend_timeout = max(1.0, timeout_seconds / len(backends))
+    for backend, backend_name in backends:
+        cap = cv2.VideoCapture(source) if backend is None else cv2.VideoCapture(source, backend)
+        deadline = time.monotonic() + per_backend_timeout
+        frame = None
+        read_count = 0
+        try:
+            if not cap.isOpened():
+                errors.append(f"{backend_name}: cannot open camera")
                 continue
+            while time.monotonic() < deadline:
+                ok, current = cap.read()
+                if not ok or current is None:
+                    time.sleep(0.1)
+                    continue
+                frame = current
+                read_count += 1
+                if read_count >= warmup_frames:
+                    return frame, f"{stream_url} ({backend_name})"
+            errors.append(f"{backend_name}: cannot grab a frame")
+        finally:
+            cap.release()
 
-            frame = current
-            read_count += 1
-            if read_count >= warmup_frames:
-                break
-    finally:
-        cap.release()
-
-    if frame is None:
-        raise RuntimeError(f"Failed to read a frame from stream: {stream_url}")
-
-    return frame, str(stream_url)
+    raise RuntimeError(
+        f"Failed to read a frame from camera/stream: {stream_url}. "
+        f"Tried: {'; '.join(errors)}. Close other camera apps and check Windows camera privacy permissions."
+    )
 
 
 def require_state() -> ViewerState:

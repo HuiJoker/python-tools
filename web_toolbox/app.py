@@ -3,8 +3,8 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Annotated
 
-from fastapi import FastAPI, Form, HTTPException, Request
-from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi import FastAPI, Form, HTTPException, Query, Request
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
@@ -28,7 +28,26 @@ def page(request: Request, name: str, **context: object) -> HTMLResponse:
 
 @app.get("/", response_class=HTMLResponse)
 def index(request: Request) -> HTMLResponse:
-    return page(request, "index.html", recent_tasks=service.list_tasks(limit=5))
+    return page(request, "index.html", recent_tasks=service.list_tasks(limit=5), health=service.health_status())
+
+
+@app.get("/system", response_class=HTMLResponse)
+def system_status(request: Request) -> HTMLResponse:
+    return page(request, "system.html", health=service.health_status())
+
+
+@app.get("/api/health")
+def health_api() -> JSONResponse:
+    return JSONResponse(service.health_status())
+
+
+@app.get("/preview")
+def preview_file(path: str = Query()) -> FileResponse:
+    target = Path(path)
+    allowed_extensions = {".jpg", ".jpeg", ".png", ".bmp", ".gif", ".webp"}
+    if not target.is_file() or target.suffix.lower() not in allowed_extensions:
+        raise HTTPException(status_code=404, detail="预览文件不存在或不是支持的图片类型")
+    return FileResponse(target)
 
 
 @app.get("/tools/dataset-inspection", response_class=HTMLResponse)
@@ -55,6 +74,25 @@ def run_dataset_inspection(
 @app.get("/tools/label-analysis")
 def old_dataset_tool() -> RedirectResponse:
     return RedirectResponse("/tools/dataset-inspection", status_code=307)
+
+
+@app.get("/tools/pixel-selector", response_class=HTMLResponse)
+def pixel_selector_form(request: Request) -> HTMLResponse:
+    return page(request, "pixel_selector.html")
+
+
+@app.post("/tools/pixel-selector", response_class=HTMLResponse)
+def launch_pixel_selector(
+    request: Request,
+    image_path: Annotated[str, Form()] = "",
+    stream_url: Annotated[str, Form()] = "",
+    warmup_frames: Annotated[int, Form()] = 5,
+) -> HTMLResponse:
+    try:
+        pid = service.launch_pixel_selector(image_path, stream_url, warmup_frames)
+    except (FileNotFoundError, ValueError) as exc:
+        return page(request, "pixel_selector.html", error=str(exc), form=locals())
+    return page(request, "pixel_selector.html", launched_pid=pid)
 
 
 @app.get("/tools/label-compare", response_class=HTMLResponse)

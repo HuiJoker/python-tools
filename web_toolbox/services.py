@@ -2,7 +2,10 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import shutil
 import sqlite3
+import subprocess
+import sys
 import time
 from collections import Counter
 from datetime import UTC, datetime
@@ -82,6 +85,32 @@ class ToolService:
             raise NotADirectoryError(f"路径不是文件夹：{path}")
         return path.resolve()
 
+    def health_status(self) -> dict[str, object]:
+        def package(name: str) -> bool:
+            return importlib.util.find_spec(name) is not None
+
+        return {
+            "python": {"ok": True, "detail": sys.executable},
+            "fastapi": {"ok": package("fastapi"), "detail": "网页服务"},
+            "opencv": {"ok": package("cv2"), "detail": "视频抽帧、图像工具"},
+            "ffmpeg": {"ok": shutil.which("ffmpeg") is not None, "detail": "视频裁剪"},
+        }
+
+    def launch_pixel_selector(self, image_path: str, stream_url: str, warmup_frames: int) -> int:
+        image_path, stream_url = image_path.strip(), stream_url.strip()
+        if bool(image_path) == bool(stream_url):
+            raise ValueError("请仅填写图片路径或视频流/摄像头地址中的一项。")
+        command = [sys.executable, str(self.root / "scripts" / "image_tools" / "pixel_distance_selector.py")]
+        if image_path:
+            image = Path(image_path)
+            if not image.is_file():
+                raise FileNotFoundError(f"图片不存在：{image}")
+            command.extend(["--image", str(image)])
+        else:
+            command.extend(["--stream", stream_url, "--warmup-frames", str(warmup_frames)])
+        process = subprocess.Popen(command, cwd=self.root, creationflags=subprocess.CREATE_NEW_CONSOLE)
+        return process.pid
+
     def run_dataset_stats(self, folder: str, recursive: bool, all_xml_tags: bool) -> dict[str, Any]:
         path = self._folder(folder)
         params = {"folder": str(path), "recursive": recursive, "all_xml_tags": all_xml_tags}
@@ -129,13 +158,14 @@ class ToolService:
                     errors.append({"file": str(xml.relative_to(path)), "error": str(exc)})
             selected_labels = self.label_analysis.normalize_labels(labels) or sorted(all_counts)
             selected_counts = {label: all_counts.get(label, 0) for label in selected_labels}
+            sample_images = [str(item) for item in images[:12]]
             return {
                 "folder": str(path), "recursive": recursive,
                 "image_count": len(images), "xml_count": len(xmls),
                 "missing_xml": sorted(image_stems - xml_stems),
                 "missing_image": sorted(xml_stems - image_stems),
                 "label_total": sum(selected_counts.values()), "label_counts": selected_counts,
-                "xml_tag_counts": tags, "parse_errors": errors,
+                "xml_tag_counts": tags, "parse_errors": errors, "sample_images": sample_images,
             }
 
         return self._execute("dataset_inspection", params, operation)
