@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}本地视觉数据工具台{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', path='/style.css') }}">
+</head>
+<body>
+  <header class="topbar"><a class="brand" href="/">本地视觉数据工具台</a><nav><a href="/">工具</a><a href="/history">任务历史</a></nav></header>
+  <main>{% block content %}{% endblock %}</main>
+</body>
+</html>

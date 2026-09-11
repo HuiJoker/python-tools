@@ -1,0 +1,6 @@
+{% extends "base.html" %}{% block title %}图片拆分 · 工具台{% endblock %}{% block content %}
+<a class="back" href="/">← 返回工具</a><h1>图片拆分</h1><p class="muted">默认只预演。实际执行会在源目录内创建 <code>源目录名_1</code>、<code>源目录名_2</code> 等批次文件夹；不足半批的余数会并入最后一批。</p>
+{% include "partials/error.html" %}
+<form method="post" class="panel form"><label>图片文件夹<input name="source" required placeholder="F:\\images" value="{{ form.source if form else '' }}"></label><label>每批图片数<input type="number" min="1" name="batch_size" value="{{ form.batch_size if form else 400 }}"></label><label class="check"><input type="checkbox" name="recursive" {% if form and form.recursive %}checked{% endif %}> 包含子文件夹</label><label class="check"><input type="checkbox" name="copy_files" {% if form and form.copy_files %}checked{% endif %}> 复制图片（不勾选则移动）</label><label class="check safety"><input type="checkbox" name="dry_run" {% if not form or form.dry_run %}checked{% endif %}> 仅预演，不写入文件</label><label class="check danger"><input type="checkbox" name="confirmed" {% if form and form.confirmed %}checked{% endif %}> 我已确认：关闭预演时将执行复制或移动</label><button>运行</button></form>
+{% if task %}{% include "partials/task_result.html" %}{% endif %}
+{% endblock %}

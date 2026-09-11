@@ -1,0 +1,6 @@
+{% extends "base.html" %}{% block title %}数据集检查 · 工具台{% endblock %}{% block content %}
+<a class="back" href="/">← 返回工具</a><h1>数据集检查</h1><p class="muted">一次检查图片/XML 数量、标签分布、缺失配对和 XML 解析异常；只读取文件，不会修改数据。</p>
+{% include "partials/error.html" %}
+<form method="post" class="panel form"><label>数据集文件夹<input name="folder" required placeholder="F:\\dataset" value="{{ form.folder if form else '' }}"></label><label>仅统计指定标签（可留空）<input name="labels" placeholder="例如：DCC w_rope" value="{{ form.labels if form else '' }}"></label><details><summary>高级选项</summary><div class="advanced"><label class="check"><input type="checkbox" name="recursive" {% if form and form.recursive %}checked{% endif %}> 扫描子文件夹</label><label class="check"><input type="checkbox" name="all_xml_tags" {% if form and form.all_xml_tags %}checked{% endif %}> 同时统计 XML 元素标签</label></div></details><button>开始检查</button></form>
+{% if task %}{% include "partials/task_result.html" %}{% endif %}
+{% endblock %}

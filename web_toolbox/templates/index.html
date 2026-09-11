@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% block content %}
+<section class="hero"><p class="eyebrow">LOCAL · PRIVATE · TRACEABLE</p><h1>把日常脚本，变成可见的工作流。</h1><p>所有处理仍在本机完成。先从数据集与标注工具开始。</p></section>
+<section class="cards">
+  <a class="card" href="/tools/dataset-inspection"><span>01</span><h2>数据集检查</h2><p>统计标签、检查图片/XML 配对与解析异常。</p></a>
+  <a class="card" href="/tools/label-compare"><span>02</span><h2>标注版本对比</h2><p>比对两个 XML 目录中的新增、删除和修改。</p></a>
+  <a class="card" href="/tools/split-images"><span>03</span><h2>图片拆分</h2><p>先预演，再复制或移动到批次文件夹。</p></a>
+</section>
+{% if recent_tasks %}<section><div class="section-heading"><h2>最近任务</h2><a href="/history">查看全部</a></div><div class="panel">{% for task in recent_tasks %}<a class="task-row" href="/history/{{ task.id }}"><span>#{{ task.id }} · {{ task.tool }}</span><span class="status {{ task.status }}">{{ '成功' if task.status == 'success' else '失败' }}</span><time>{{ task.created_at }}</time></a>{% endfor %}</div></section>{% endif %}
+{% endblock %}
